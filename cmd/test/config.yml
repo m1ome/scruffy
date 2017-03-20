@@ -1,0 +1,15 @@
+source: /Users/w1n2k/Work/Golang/src/github.com/m1ome/scruffy/cmd/test/input/version_1
+token: 519503441186ceb64b433cbc6455d2e7
+
+public:
+  name: scruffypublic
+  preview: scruffypublicpreview
+  env:
+    Title: Hello, user!
+    Token: 519503441186ceb64b433cbc6455d2e7
+
+private:
+  name: scruffytest
+  env:
+    Title: Hello, world.
+    Token: 519503441186ceb64b433cbc6455d2e7

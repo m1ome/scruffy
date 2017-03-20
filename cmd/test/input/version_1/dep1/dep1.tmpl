@@ -1,0 +1,14 @@
+{{ define "dep1" -}}
+### List [GET]
+
++ Request (application/json)
+    + Headers
+
+            x-api-key: {{ .Token }}
+
++ Response 200 (text/plain)
+
+        Hello, world!
+
+{{ template "dep1/dep2" }}
+{{ end }}
