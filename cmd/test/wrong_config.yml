@@ -2,15 +2,15 @@ source: /Users/w1n2k/Work/Golang/src/github.com/m1ome/scruffy/cmd/test/input/ver
 token: 519503441186ceb64b433cbc6455d2e7
 
 environments:
-  public:
-        release: scruffypublic
+  - public:
+        name: scruffypublic
         preview: scruffypublicpreview
         env:
           Title: Hello, user!
           Token: 519503441186ceb64b433cbc6455d2e7
 
-  private:
-        release: scruffyprivate
+  - private:
+        name: scruffyprivate
         preview: scruffyprivatepreview
         env:
           Title: Hello, world.

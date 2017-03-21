@@ -1,30 +1,53 @@
 package cmd
 
 import (
-	"gopkg.in/yaml.v2"
+	"fmt"
 	"io/ioutil"
-	"os"
 	"path"
+
+	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
-	Token   string `yaml:"token"`
-	Source  string `yaml:"source"`
-	Public  Env    `yaml:"public"`
-	Private Env    `yaml:"private"`
+	YML *ConfigYML
+	Wd  WorkingDirGetter
+}
+
+type ConfigYML struct {
+	Token        string         `yaml:"token"`
+	Source       string         `yaml:"source"`
+	Environments map[string]Env `yaml:"environments"`
 }
 
 type Env struct {
-	Name    string                 `yaml:"name"`
+	Release string                 `yaml:"release"`
 	Preview string                 `yaml:"preview"`
 	Env     map[string]interface{} `yaml:"env"`
 }
 
-func ParseConfig(file string) (*Config, error) {
+//
+// Methods
+//
+func NewConfig() *Config {
+	return &Config{
+		Wd: Getwd,
+	}
+}
+
+func (c Config) Env(name string) (Env, error) {
+	env, ok := c.YML.Environments[name]
+	if !ok {
+		return Env{}, fmt.Errorf("Unknown environment: %s", name)
+	}
+
+	return env, nil
+}
+
+func (c *Config) Parse(file string) error {
 	if file == "" || !path.IsAbs(file) {
-		cwd, err := os.Getwd()
+		cwd, err := c.Wd()
 		if err != nil {
-			return nil, err
+			return err
 		}
 
 		name := "scruffy.yml"
@@ -36,14 +59,16 @@ func ParseConfig(file string) (*Config, error) {
 
 	yml, err := ioutil.ReadFile(file)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	var config Config
+	var config ConfigYML
 	err = yaml.Unmarshal(yml, &config)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return &config, nil
+	c.YML = &config
+
+	return nil
 }

@@ -13,7 +13,7 @@
 			"importpath": "github.com/m1ome/apiary",
 			"repository": "https://github.com/m1ome/apiary",
 			"vcs": "git",
-			"revision": "2454b68a3b9e00472bbe8ee365853348c490a464",
+			"revision": "4a6835c1e077383dfd1a16e8510cb48d5137ba97",
 			"branch": "master",
 			"notests": true
 		},

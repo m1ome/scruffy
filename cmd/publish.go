@@ -6,18 +6,29 @@ import (
 	"github.com/m1ome/apiary"
 )
 
-func Publish(source, name, token string, env interface{}) error {
+type Publisher struct {
+	Wd     WorkingDirGetter
+	Parser *Parser
+	Apiary apiary.ApiaryInterface
+}
 
-	buf, err := Parse(source, env)
+func NewPublisher(token string) *Publisher {
+	return &Publisher{
+		Wd:     Getwd,
+		Parser: NewParser(),
+		Apiary: apiary.NewApiary(apiary.ApiaryOptions{
+			Token: token,
+		}),
+	}
+}
+
+func (p Publisher) Publish(source, name string, env interface{}) error {
+	buf, err := p.Parser.Parse(source, env)
 	if err != nil {
 		return errors.New(fmt.Sprintf("Parsing error: %s", err.Error()))
 	}
 
-	api := apiary.NewApiary(apiary.ApiaryOptions{
-		Token: token,
-	})
-
-	published, err := api.PublishBlueprint(name, buf)
+	published, err := p.Apiary.PublishBlueprint(name, buf)
 	if err != nil {
 		return errors.New(fmt.Sprintf("Publishing error: %s", err.Error()))
 	}

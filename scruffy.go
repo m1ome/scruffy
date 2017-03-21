@@ -1,9 +1,7 @@
 // +build !test
-
 package main
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -16,7 +14,8 @@ import (
 )
 
 func watch(config *cmd.Config, c *cli.Context, wf func(config *cmd.Config, c *cli.Context) error) error {
-	fmt.Printf("Start watching changes in: %s\n", config.Source)
+
+	fmt.Printf("Start watching changes in: %s\n", config.YML.Source)
 
 	w := watcher.New()
 	w.SetMaxEvents(1)
@@ -29,8 +28,8 @@ func watch(config *cmd.Config, c *cli.Context, wf func(config *cmd.Config, c *cl
 			select {
 			case event := <-w.Event:
 				fmt.Printf("Source directory[%s] changed, republishing\n", event.Path)
-
-				config, err := cmd.ParseConfig(c.String("config"))
+				config := cmd.NewConfig()
+				err := config.Parse(c.String("config"))
 				if err != nil {
 					watcherError <- err
 					done <- true
@@ -57,7 +56,7 @@ func watch(config *cmd.Config, c *cli.Context, wf func(config *cmd.Config, c *cl
 		}
 	}()
 
-	err := w.AddRecursive(config.Source)
+	err := w.AddRecursive(config.YML.Source)
 	if err != nil {
 		return fmt.Errorf("Adding folders to watch error: %s\n", err.Error())
 	}
@@ -71,31 +70,42 @@ func watch(config *cmd.Config, c *cli.Context, wf func(config *cmd.Config, c *cl
 }
 
 func publishChanges(config *cmd.Config, c *cli.Context) (err error) {
-	if !c.Bool("production") {
-		err = cmd.Publish(config.Source, config.Public.Preview, config.Token, config.Public.Env)
-		if err != nil {
-			err = errors.New(fmt.Sprintf("Public publishing error: %s\n", err.Error()))
-		}
+	p := cmd.NewPublisher(config.YML.Token)
 
-		fmt.Printf("Public preview available at: http://docs.%s.apiary.io/#\n", config.Public.Preview)
+	env, err := config.Env(c.String("env"))
+	if err != nil {
+		err = fmt.Errorf("Environment error: %s", err)
 		return
 	}
 
-	err = cmd.Publish(config.Source, config.Public.Name, config.Token, config.Public.Env)
-	if err != nil {
-		err = errors.New(fmt.Sprintf("Public publishing error: %s\n", err.Error()))
+	var name string
+	if c.Bool("release") {
+		name = env.Release
+	} else {
+		name = env.Preview
 	}
 
-	fmt.Printf("Public docs changed: http://docs.%s.apiary.io/#\n", config.Public.Name)
+	err = p.Publish(config.YML.Source, name, env.Env)
+
+	if err != nil {
+		err = fmt.Errorf("Publish error: %s", err)
+		return
+	}
+
+	fmt.Printf("Public docs changed: http://docs.%s.apiary.io/#\n", name)
 
 	return
 }
 
 func buildChanges(config *cmd.Config, c *cli.Context) (err error) {
-	src := config.Source
-	env := config.Private.Env
+	src := config.YML.Source
+	env, err := config.Env(c.String("env"))
 
-	cwd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	cwd, err := cmd.Getwd()
 	if err != nil {
 		return fmt.Errorf("Cwd error: %s", cwd)
 	}
@@ -105,7 +115,8 @@ func buildChanges(config *cmd.Config, c *cli.Context) (err error) {
 		os.MkdirAll(path.Dir(build), 0770)
 	}
 
-	buf, err := cmd.Parse(src, env)
+	parser := cmd.NewParser()
+	buf, err := parser.Parse(src, env.Env)
 	if err != nil {
 		return fmt.Errorf("Parsing error: %s", err.Error())
 	}
@@ -157,18 +168,24 @@ func main() {
 					Usage: "application configuration in yaml `config.yml`",
 				},
 
+				cli.StringFlag{
+					Name:  "env",
+					Usage: "Environment that have been set in config",
+				},
+
 				cli.BoolFlag{
-					Name:  "production",
-					Usage: "Publish only preview",
+					Name:  "release",
+					Usage: "Release changes in production doc `false`",
 				},
 
 				cli.BoolFlag{
 					Name:  "watch",
-					Usage: "Watch changes and reload on file change `false`",
+					Usage: "Watch changes and reload",
 				},
 			},
 			Action: func(c *cli.Context) error {
-				config, err := cmd.ParseConfig(c.String("config"))
+				config := cmd.NewConfig()
+				err := config.Parse(c.String("config"))
 				if err != nil {
 					return cli.NewExitError(fmt.Sprintf("Config parsing error: %s\n", err.Error()), 1)
 				}
@@ -201,13 +218,19 @@ func main() {
 					Usage: "application configuration in yaml",
 				},
 
+				cli.StringFlag{
+					Name:  "env",
+					Usage: "Environment that have been set in config",
+				},
+
 				cli.BoolFlag{
 					Name:  "watch",
 					Usage: "Watch changes and reload on file change `false`",
 				},
 			},
 			Action: func(c *cli.Context) error {
-				config, err := cmd.ParseConfig(c.String("config"))
+				config := cmd.NewConfig()
+				err := config.Parse(c.String("config"))
 				if err != nil {
 					return cli.NewExitError(fmt.Sprintf("Config parsing error: %s\n", err.Error()), 1)
 				}

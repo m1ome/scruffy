@@ -14,9 +14,19 @@ const errEmptyResult = "Parsed empty template"
 const errEmptyDirectory = "Empty input directory"
 const defaultTemplate = "index"
 
-func Parse(input string, env interface{}) (res []byte, err error) {
+type Parser struct {
+	Wd WorkingDirGetter
+}
+
+func NewParser() *Parser {
+	return &Parser{
+		Wd: Getwd,
+	}
+}
+
+func (p Parser) Parse(input string, env interface{}) (res []byte, err error) {
 	if !filepath.IsAbs(input) {
-		cwd, cwdErr := os.Getwd()
+		cwd, cwdErr := p.Wd()
 		if cwdErr != nil {
 			err = cwdErr
 			return
