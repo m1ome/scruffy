@@ -1,4 +1,5 @@
-//+build !test
+// +build !test
+
 package main
 
 import (
@@ -11,7 +12,7 @@ import (
 
 	"github.com/m1ome/scruffy/cmd"
 	"github.com/radovskyb/watcher"
-	"github.com/urfave/cli"
+	cli "gopkg.in/urfave/cli.v1"
 )
 
 func watch(config *cmd.Config, c *cli.Context, wf func(config *cmd.Config, c *cli.Context) error) error {

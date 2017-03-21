@@ -8,4 +8,4 @@ before_install:
 - go get github.com/radovskyb/watcher
 - go get github.com/urfave/cli
 script:
-- "$HOME/gopath/bin/goveralls -service=travis-ci -flags '-tags test'"
+- "$HOME/gopath/bin/goveralls -service=travis-ci -flags '-tags test' -v $(go list ./... | grep -v /vendor/)"
