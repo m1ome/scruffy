@@ -68,7 +68,7 @@ func TestPublish(t *testing.T) {
 
 		err = p.Publish(config.YML.Source, env.Release, env.Env)
 		if err == nil || !strings.Contains(err.Error(), "APIARY_ERROR") {
-			t.Error("Not return error")
+			t.Errorf("Not return error: %s", err)
 		}
 	})
 
@@ -88,7 +88,7 @@ func TestPublish(t *testing.T) {
 
 		err = p.Publish(config.YML.Source, env.Release, env.Env)
 		if err != nil {
-			t.Error("Returns error")
+			t.Errorf("Returns error: %s", err)
 		}
 	})
 
