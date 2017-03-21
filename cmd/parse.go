@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 )
 
 const errEmptyResult = "Parsed empty template"
@@ -31,7 +32,7 @@ func Parse(input string, env interface{}) (res []byte, err error) {
 			return fileError
 		}
 
-		if info.IsDir() {
+		if info.IsDir() || !strings.HasSuffix(path, ".tmpl") {
 			return nil
 		}
 
