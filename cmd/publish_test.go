@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"github.com/m1ome/apiary"
+	"os"
+	"path"
 	"strings"
 )
 
@@ -52,6 +54,13 @@ func TestPublish(t *testing.T) {
 		}
 	})
 
+	cwd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	sources := path.Join(cwd, "test", "input", "version_1")
+
 	t.Run("Apiary error", func(t *testing.T) {
 		p := &Publisher{
 			Wd:     Getwd,
@@ -66,7 +75,7 @@ func TestPublish(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		err = p.Publish(config.YML.Source, env.Release, env.Env)
+		err = p.Publish(sources, env.Release, env.Env)
 		if err == nil || !strings.Contains(err.Error(), "APIARY_ERROR") {
 			t.Errorf("Not return error: %s", err)
 		}
@@ -86,7 +95,7 @@ func TestPublish(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		err = p.Publish(config.YML.Source, env.Release, env.Env)
+		err = p.Publish(sources, env.Release, env.Env)
 		if err != nil {
 			t.Errorf("Returns error: %s", err)
 		}
@@ -106,7 +115,7 @@ func TestPublish(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		err = p.Publish(config.YML.Source, env.Release, env.Env)
+		err = p.Publish(sources, env.Release, env.Env)
 		if err == nil {
 			t.Error("Should return publish error")
 		}
