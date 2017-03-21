@@ -26,7 +26,8 @@ func Test_Parse(t *testing.T) {
 	})
 
 	t.Run("Unexistable output directory", func(t *testing.T) {
-		_, err := Parse(in, nil)
+		unexisting := path.Join(dir, "input", "unexisting")
+		_, err := Parse(unexisting, nil)
 
 		if err == nil {
 			t.Error("Unknown directory should return error")
@@ -51,26 +52,6 @@ func Test_Parse(t *testing.T) {
 		}
 	})
 
-	tpl := []byte(`
-# Testing
-
-## Accounts [/accounts]
-
-### List [GET]
-
-+ Response (text/plain)
-
-        Hello, world!
-
-+ Response (application/json)
-
-        {"message": "Hello, world!"}
-
-### Delete [/accounts/{id} GET]
-+ Parameters
-    + id (number, required) - Account ID
-`)
-
 	t.Run("Parse template successfully", func(t *testing.T) {
 		buf, err := Parse(in, map[string]string{
 			"Title": "Testing",
@@ -80,8 +61,8 @@ func Test_Parse(t *testing.T) {
 			t.Error(err)
 		}
 
-		if bytes.Compare(buf, tpl) != 0 {
-			t.Error("Templates differs")
+		if !bytes.Contains(buf, []byte("# Testing")) {
+			t.Error("Template don't contain env variables")
 		}
 	})
 }
