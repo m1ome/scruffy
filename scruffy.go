@@ -165,7 +165,7 @@ func main() {
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "config",
-					Usage: "application configuration in yaml `config.yml`",
+					Usage: "application configuration in yaml `scruffy.yml`",
 				},
 
 				cli.StringFlag{
@@ -180,7 +180,7 @@ func main() {
 
 				cli.BoolFlag{
 					Name:  "watch",
-					Usage: "Watch changes and reload",
+					Usage: "Watch changes and reload on file change `false`",
 				},
 			},
 			Action: func(c *cli.Context) error {
@@ -215,7 +215,7 @@ func main() {
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "config",
-					Usage: "application configuration in yaml",
+					Usage: "application configuration in yaml `scruffy.yml`",
 				},
 
 				cli.StringFlag{

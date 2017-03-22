@@ -4,6 +4,6 @@ go:
 - 1.8
 before_install:
 - go get github.com/mattn/goveralls
-- go get github.com/m1ome/scruffy
+- go get github.com/satori/go.uuid
 script:
 - "go test -covermode=count -coverprofile=profile.cov ./cmd && $HOME/gopath/bin/goveralls -coverprofile=profile.cov -service=travis-ci"
