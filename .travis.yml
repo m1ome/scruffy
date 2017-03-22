@@ -6,4 +6,4 @@ before_install:
 - go get github.com/mattn/goveralls
 - go get github.com/satori/go.uuid
 script:
-- "go test -covermode=count -coverprofile=profile.cov ./cmd && $HOME/gopath/bin/goveralls -coverprofile=profile.cov -service=travis-ci"
+- "go test -v scruffy_test.go && go test -v -covermode=count -coverprofile=profile.cov ./cmd && $HOME/gopath/bin/goveralls -coverprofile=profile.cov -service=travis-ci"
