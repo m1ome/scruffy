@@ -21,7 +21,7 @@ USAGE:
    scruffy [global options] command [command options] [arguments...]
 
 VERSION:
-   0.0.0
+   0.0.1
 
 COMMANDS:
      publish  Publish/Preview your public blueprint
@@ -32,24 +32,61 @@ GLOBAL OPTIONS:
    --token value  apiary.io token
    --help, -h     show help
    --version, -v  print the version
+```
 
+# Build
+Building changes will be available at `<source>\build\apiary.apib`
+```
+$ scruffy build --help
+
+NAME:
+   scruffy build - Build your blueprint
+
+USAGE:
+   scruffy build [command options] [arguments...]
+
+OPTIONS:
+   --config scruffy.yml  application configuration in yaml scruffy.yml
+   --env value           Environment that have been set in config
+   --watch false         Watch changes and reload on file change false
+
+```
+
+# Publish
+Publishing changes to apiary.io
+```
+$ scruffy publish --help
+
+NAME:
+   scruffy publish - Publish/Preview your public blueprint
+
+USAGE:
+   scruffy publish [command options] [arguments...]
+
+OPTIONS:
+   --config scruffy.yml  application configuration in yaml scruffy.yml
+   --env value           Environment that have been set in config
+   --release false       Release changes in production doc false
+   --watch false         Watch changes and reload on file change false
 ```
 
 # Configuraion file
 ```
-source: src
-token: your_token_in_here
+source: source
+token: <YOUR_TOKEN>
 
-public:
-  name: public
-  preview: publicpreview
-  env:
-    Title: Public title
-    Name: Public Name
+environments:
+  public:
+        release: scruffypublic
+        preview: scruffypublicpreview
+        env:
+          Title: Hello, user!
+          Token: 519503441186ceb64b433cbc6455d2e7
 
-private:
-  name: private
-  env:
-    Title: Private title
-    Name: Private Name
+  private:
+        release: scruffyprivate
+        preview: scruffyprivatepreview
+        env:
+          Title: Hello, world.
+          Token: 519503441186ceb64b433cbc6455d2e7
 ```
