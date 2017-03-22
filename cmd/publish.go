@@ -31,12 +31,12 @@ func NewPublisher(token string) *Publisher {
 func (p Publisher) Publish(source, name string, env interface{}) error {
 	buf, err := p.Parser.Parse(source, env)
 	if err != nil {
-		return errors.New(fmt.Sprintf("Parsing error: %s", err.Error()))
+		return fmt.Errorf("Parsing error: %s", err)
 	}
 
 	published, err := p.Apiary.PublishBlueprint(name, buf)
 	if err != nil {
-		return errors.New(fmt.Sprintf("Publishing error: %s", err.Error()))
+		return fmt.Errorf("Publishing error: %s", err)
 	}
 
 	if published {
