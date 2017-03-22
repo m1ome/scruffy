@@ -6,12 +6,17 @@ import (
 	"github.com/m1ome/apiary"
 )
 
+// Publisher object, contains following:
+//
+// Parser - Parser object
+// Apiary - http://github.com/m1ome/apiary API object
 type Publisher struct {
 	Wd     WorkingDirGetter
 	Parser *Parser
 	Apiary apiary.ApiaryInterface
 }
 
+// NewPublisher returns Publisher object
 func NewPublisher(token string) *Publisher {
 	return &Publisher{
 		Wd:     Getwd,
@@ -22,6 +27,7 @@ func NewPublisher(token string) *Publisher {
 	}
 }
 
+// Publish build & publish template to apiary.io
 func (p Publisher) Publish(source, name string, env interface{}) error {
 	buf, err := p.Parser.Parse(source, env)
 	if err != nil {

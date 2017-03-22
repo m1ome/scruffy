@@ -14,16 +14,21 @@ const errEmptyResult = "Parsed empty template"
 const errEmptyDirectory = "Empty input directory"
 const defaultTemplate = "index"
 
+// Parser empty parser object
 type Parser struct {
 	Wd WorkingDirGetter
 }
 
+// NewParser returns new Parser object
 func NewParser() *Parser {
 	return &Parser{
 		Wd: Getwd,
 	}
 }
 
+// Parse parsing folder with env variables passed in
+// by default parsing will be done though template/text
+// Golang package.
 func (p Parser) Parse(input string, env interface{}) (res []byte, err error) {
 	if !filepath.IsAbs(input) {
 		cwd, cwdErr := p.Wd()

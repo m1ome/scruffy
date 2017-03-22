@@ -1,6 +1,7 @@
 # Scruffy
 [![Build Status](https://travis-ci.org/m1ome/scruffy.svg?branch=master)](https://travis-ci.org/m1ome/scruffy)
 [![Coverage Status](https://coveralls.io/repos/github/m1ome/scruffy/badge.svg?branch=master)](https://coveralls.io/github/m1ome/scruffy?branch=master)
+[![Go Report Card](https://goreportcard.com/badge/github.com/m1ome/scruffy)](https://goreportcard.com/report/github.com/m1ome/scruffy)
 > Simple [ApiBlueprint](apiblueprint.com) builder.
 
 ![Scruffy](http://vignette4.wikia.nocookie.net/en.futurama/images/1/10/Scruffy.png/revision/latest?cb=20170123190905)

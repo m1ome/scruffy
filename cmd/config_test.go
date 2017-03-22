@@ -8,7 +8,7 @@ import (
 func TestParseConfig(t *testing.T) {
 	t.Run("Parse non existing file", func(t *testing.T) {
 		c := NewConfig()
-		err := c.Parse("non_existant_file")
+		err := c.Parse("non_existent_file")
 
 		if err == nil {
 			t.Error("Unexistant file should return error")
@@ -22,7 +22,7 @@ func TestParseConfig(t *testing.T) {
 			},
 		}
 
-		err := c.Parse("test/config.yml")
+		err := c.Parse("test/Config.yml")
 		if err == nil || err.Error() != "Some Bad Error" {
 			t.Error("Getwd() error should raise error")
 		}
@@ -39,14 +39,14 @@ func TestParseConfig(t *testing.T) {
 
 	t.Run("Parse configuration file", func(t *testing.T) {
 		c := NewConfig()
-		err := c.Parse("test/config.yml")
+		err := c.Parse("test/Config.yml")
 
 		if err != nil {
 			t.Errorf("Config parsing returned: %s", err)
 		}
 
 		if c.YML.Environments == nil || len(c.YML.Environments) != 2 {
-			t.Error("Parsed wrong number of environments from config")
+			t.Error("Parsed wrong number of environments from Config")
 		}
 
 		env, err := c.Env("public")

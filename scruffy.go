@@ -1,4 +1,3 @@
-// +build !test
 package main
 
 import (
@@ -139,7 +138,7 @@ func buildChanges(config *cmd.Config, c *cli.Context) (err error) {
 		return fmt.Errorf("Building error: %s", err.Error())
 	}
 
-	fmt.Printf("Build avaiable at: %s\n", build)
+	fmt.Printf("Build available at: %s\n", build)
 	return nil
 }
 
@@ -187,7 +186,7 @@ func main() {
 				config := cmd.NewConfig()
 				err := config.Parse(c.String("config"))
 				if err != nil {
-					return cli.NewExitError(fmt.Sprintf("Config parsing error: %s\n", err.Error()), 1)
+					return cli.NewExitError(fmt.Sprintf("config parsing error: %s\n", err.Error()), 1)
 				}
 
 				err = publishChanges(config, c)
@@ -232,7 +231,7 @@ func main() {
 				config := cmd.NewConfig()
 				err := config.Parse(c.String("config"))
 				if err != nil {
-					return cli.NewExitError(fmt.Sprintf("Config parsing error: %s\n", err.Error()), 1)
+					return cli.NewExitError(fmt.Sprintf("config parsing error: %s\n", err.Error()), 1)
 				}
 
 				err = buildChanges(config, c)

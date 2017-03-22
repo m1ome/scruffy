@@ -5,9 +5,9 @@ import (
 	"testing"
 
 	"github.com/m1ome/apiary"
+	"strings"
 	"os"
 	"path"
-	"strings"
 )
 
 type FakeApiary struct{}
@@ -69,7 +69,7 @@ func TestPublish(t *testing.T) {
 		}
 
 		config := NewConfig()
-		config.Parse("test/config.yml")
+		config.Parse("test/Config.yml")
 		env, err := config.Env("public")
 		if err != nil {
 			t.Fatal(err)
@@ -89,7 +89,7 @@ func TestPublish(t *testing.T) {
 		}
 
 		config := NewConfig()
-		config.Parse("test/config.yml")
+		config.Parse("test/Config.yml")
 		env, err := config.Env("public")
 		if err != nil {
 			t.Fatal(err)
@@ -109,7 +109,7 @@ func TestPublish(t *testing.T) {
 		}
 
 		config := NewConfig()
-		config.Parse("test/config.yml")
+		config.Parse("test/Config.yml")
 		env, err := config.Env("public")
 		if err != nil {
 			t.Fatal(err)

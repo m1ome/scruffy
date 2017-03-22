@@ -1,7 +1,6 @@
 package main
 
 import (
-	//"fmt"
 	"os"
 	"os/exec"
 	"path"
@@ -70,7 +69,7 @@ func TestScruffy(t *testing.T) {
 			}
 
 			s := string(b)
-			if !strings.Contains(s, "Config parsing error:") {
+			if !strings.Contains(s, "config parsing error:") {
 				t.Fatalf("Expected %v, but %v", "Config parsing error:", s)
 			}
 		})
@@ -104,8 +103,8 @@ func TestScruffy(t *testing.T) {
 			}
 
 			s := string(b)
-			if !strings.Contains(s, "Build avaiable at:") {
-				t.Fatalf("Expected %v, but %v", "Build avaiable at:", s)
+			if !strings.Contains(s, "Build available at:") {
+				t.Fatalf("Expected %v, but %v", "Build available at:", s)
 			}
 		})
 
@@ -148,7 +147,7 @@ func TestScruffy(t *testing.T) {
 			}
 
 			s := string(b)
-			if !strings.Contains(s, "Config parsing error:") {
+			if !strings.Contains(s, "config parsing error:") {
 				t.Fatalf("Expected %v, but %v", "Config parsing error:", s)
 			}
 		})

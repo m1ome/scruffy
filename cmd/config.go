@@ -8,18 +8,19 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// Config YAML configuration object handler
 type Config struct {
-	YML *ConfigYML
+	YML *configYML
 	Wd  WorkingDirGetter
 }
 
-type ConfigYML struct {
+type configYML struct {
 	Token        string         `yaml:"token"`
 	Source       string         `yaml:"source"`
-	Environments map[string]Env `yaml:"environments"`
+	Environments map[string]env `yaml:"environments"`
 }
 
-type Env struct {
+type env struct {
 	Release string                 `yaml:"release"`
 	Preview string                 `yaml:"preview"`
 	Env     map[string]interface{} `yaml:"env"`
@@ -28,21 +29,26 @@ type Env struct {
 //
 // Methods
 //
+
+// NewConfig creates new Config object
 func NewConfig() *Config {
 	return &Config{
 		Wd: Getwd,
 	}
 }
 
-func (c Config) Env(name string) (Env, error) {
-	env, ok := c.YML.Environments[name]
+// Env returns environment by name that have been described in config
+// if no environment perstits in config.yaml it will return error
+func (c Config) Env(name string) (env, error) {
+	e, ok := c.YML.Environments[name]
 	if !ok {
-		return Env{}, fmt.Errorf("Unknown environment: %s", name)
+		return env{}, fmt.Errorf("Unknown environment: %s", name)
 	}
 
-	return env, nil
+	return e, nil
 }
 
+// Parse parsing config file
 func (c *Config) Parse(file string) error {
 	if file == "" || !path.IsAbs(file) {
 		cwd, err := c.Wd()
@@ -62,7 +68,7 @@ func (c *Config) Parse(file string) error {
 		return err
 	}
 
-	var config ConfigYML
+	var config configYML
 	err = yaml.Unmarshal(yml, &config)
 	if err != nil {
 		return err

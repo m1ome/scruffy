@@ -1,5 +1,6 @@
 package cmd
 
 var (
-	Version = "0.0.1" // Placeholder for the version
+	// Current version of CLI util
+	Version = "1.0" // Placeholder for the version
 )
