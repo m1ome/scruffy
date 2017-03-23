@@ -34,6 +34,10 @@ func (p Publisher) Publish(source, name string, env interface{}) error {
 		return fmt.Errorf("Parsing error: %s", err)
 	}
 
+	if name == "" {
+		return errors.New("Empty release name")
+	}
+
 	published, err := p.Apiary.PublishBlueprint(name, buf)
 	if err != nil {
 		return fmt.Errorf("Publishing error: %s", err)

@@ -57,6 +57,23 @@ func TestScruffy(t *testing.T) {
 			}
 		})
 
+		t.Run("Empty environment", func(t *testing.T) {
+			tmp := build(t)
+			defer os.RemoveAll(tmp)
+
+			os.Chdir(dir)
+			cmd := exec.Command("scruffy", "build", "--config", config)
+			b, err := cmd.CombinedOutput()
+			if err == nil {
+				t.Fatal("Expected error code 1 got 0")
+			}
+
+			s := string(b)
+			if !strings.Contains(s, "Please pass non-empty --env") {
+				t.Fatalf("Expected %v, but %v", "Please pass non-empty --env", s)
+			}
+		})
+
 		t.Run("Unexisting config", func(t *testing.T) {
 			tmp := build(t)
 			defer os.RemoveAll(tmp)
@@ -135,6 +152,23 @@ func TestScruffy(t *testing.T) {
 			}
 		})
 
+		t.Run("Empty environment", func(t *testing.T) {
+			tmp := build(t)
+			defer os.RemoveAll(tmp)
+
+			os.Chdir(dir)
+			cmd := exec.Command("scruffy", "publish", "--config", config)
+			b, err := cmd.CombinedOutput()
+			if err == nil {
+				t.Fatal("Expected error code 1 got 0")
+			}
+
+			s := string(b)
+			if !strings.Contains(s, "Please pass non-empty --env") {
+				t.Fatalf("Expected %v, but %v", "Please pass non-empty --env", s)
+			}
+		})
+
 		t.Run("Unexisting config", func(t *testing.T) {
 			tmp := build(t)
 			defer os.RemoveAll(tmp)
@@ -184,6 +218,27 @@ func TestScruffy(t *testing.T) {
 			if !strings.Contains(s, "Public docs changed:") {
 				t.Fatalf("Expected %v, but %v", "Public docs changed:", s)
 			}
+		})
+
+		t.Run("Success release", func(t *testing.T) {
+			tmp := build(t)
+			defer os.RemoveAll(tmp)
+
+			os.Chdir(dir)
+			cmd := exec.Command("scruffy", "publish", "--config", config, "--env", "public", "--release")
+			b, err := cmd.CombinedOutput()
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			s := string(b)
+			if !strings.Contains(s, "Public docs changed:") {
+				t.Fatalf("Expected %v, but %v", "Public docs changed:", s)
+			}
+		})
+
+		t.Run("Watching", func(t *testing.T) {
+			t.Skip("Implement someday!")
 		})
 
 	})

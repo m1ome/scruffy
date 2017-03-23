@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -13,7 +14,6 @@ import (
 )
 
 func watch(config *cmd.Config, c *cli.Context, wf func(config *cmd.Config, c *cli.Context) error) error {
-
 	fmt.Printf("Start watching changes in: %s\n", config.YML.Source)
 
 	w := watcher.New()
@@ -69,6 +69,9 @@ func watch(config *cmd.Config, c *cli.Context, wf func(config *cmd.Config, c *cl
 }
 
 func publishChanges(config *cmd.Config, c *cli.Context) (err error) {
+	if c.String("env") == "" {
+		return errors.New("Please pass non-empty --env")
+	}
 	p := cmd.NewPublisher(config.YML.Token)
 
 	env, err := config.Env(c.String("env"))
@@ -97,6 +100,10 @@ func publishChanges(config *cmd.Config, c *cli.Context) (err error) {
 }
 
 func buildChanges(config *cmd.Config, c *cli.Context) (err error) {
+	if c.String("env") == "" {
+		return errors.New("Please pass non-empty --env")
+	}
+
 	src := config.YML.Source
 	env, err := config.Env(c.String("env"))
 

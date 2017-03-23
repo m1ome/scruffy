@@ -45,6 +45,22 @@ func (a FakeApiaryNonPublish) PublishBlueprint(name string, content []byte) (pub
 }
 
 func TestPublish(t *testing.T) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	sources := path.Join(cwd, "test", "input", "version_1")
+
+	t.Run("Empty release name", func(t *testing.T) {
+		p := NewPublisher("token")
+		err := p.Publish(sources, "", nil)
+
+		if err == nil {
+			t.Error("Empty release name not bubble error")
+		}
+	})
+
 	t.Run("Parsing error", func(t *testing.T) {
 		p := NewPublisher("token")
 		err := p.Publish("/unknown/directory", "wrong_name", nil)
@@ -53,13 +69,6 @@ func TestPublish(t *testing.T) {
 			t.Error("Wrong directory should return error")
 		}
 	})
-
-	cwd, err := os.Getwd()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	sources := path.Join(cwd, "test", "input", "version_1")
 
 	t.Run("Apiary error", func(t *testing.T) {
 		p := &Publisher{
