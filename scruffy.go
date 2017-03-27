@@ -20,7 +20,6 @@ func watch(config *cmd.Config, c *cli.Context, wf func(config *cmd.Config, c *cl
 	w.SetMaxEvents(1)
 	w.FilterOps(watcher.Write, watcher.Create)
 
-	done := make(chan bool)
 	watcherError := make(chan error)
 	go func() {
 		for {
@@ -31,24 +30,21 @@ func watch(config *cmd.Config, c *cli.Context, wf func(config *cmd.Config, c *cl
 				err := config.Parse(c.String("config"))
 				if err != nil {
 					watcherError <- err
-					done <- true
 
 					return
 				}
 
 				err = wf(config, c)
 				if err != nil {
-					watcherError <- err
-					done <- true
-
-					return
+					fmt.Printf("Build error: %s", err)
+					fmt.Println("Waiting for changes")
 				}
 			case err := <-w.Error:
 				watcherError <- err
-				done <- true
 
 				return
 			case <-w.Closed:
+				watcherError <- errors.New("Watcher closed")
 
 				return
 			}
@@ -64,8 +60,8 @@ func watch(config *cmd.Config, c *cli.Context, wf func(config *cmd.Config, c *cl
 		return fmt.Errorf("Watcher error: %s\n", err.Error())
 	}
 
-	<-done
-	return nil
+	err = <-watcherError
+	return err
 }
 
 func publishChanges(config *cmd.Config, c *cli.Context) (err error) {
